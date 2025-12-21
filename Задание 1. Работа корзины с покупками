@@ -1,0 +1,88 @@
+#include <iostream>
+#include <map>
+#include <exception>
+#include <string>
+
+using namespace std;
+
+map<string, int> products;
+map<string, int> usersCart;
+
+class UsersCountMore : public exception {
+	const char* what() const noexcept override {
+		return "Count is more than available\n";
+	}
+};
+
+class DoesntExist : public exception {
+	const char* what() const noexcept override {
+		return "Invalid product\n";
+	}
+};
+
+void add(string& product, int count) {
+	auto it = products.find(product);
+	if (it == end(products))
+		throw DoesntExist();
+	if (it->second < count)
+		throw UsersCountMore();
+
+	usersCart.emplace(it->first, it->second);
+}
+
+void remove(string& product, int count) {
+	auto it = usersCart.find(product);
+	if (it == end(usersCart))
+		throw DoesntExist();
+	if (it->second < count)
+		throw UsersCountMore();
+
+	usersCart.erase(product);
+}
+
+int main(){
+	for (size_t i = 0; i < 5; i++) {
+		string product;
+		int count;
+		cin >> product >> count;
+		products.emplace(product, count);
+	}
+
+
+	try {
+		string command;
+		while (true) {
+			cout << "Enter command(\n\t'exit' - to stop programm \n\t'add' - to add product to cart \n\t'remove' - to remove product from cart): "; cin >> command;
+			if (command == "exit")
+				return 0;
+			else if (command == "add") {
+				cout << "We have: \n";
+				for (auto it = products.begin(); it != products.end(); it++) {
+					cout << it->first << " - " << it->second << endl;
+				}
+				cout << "Enter wanted product: ";
+				string prod; int count;
+				cin >> prod >> count;
+				add(prod, count);
+
+				cout << "You added " << count << " " << prod << " in your cart\n";
+
+			}
+			else if (command == "remove") {
+				cout << "You can remove: \n";
+				for (auto it = usersCart.begin(); it != usersCart.end(); it++) {
+					cout << it->first << " - " << it->second << endl;
+				}
+				cout << "Enter product what you want to remove: ";
+				string prod; int count;
+				cin >> prod >> count;
+				add(prod, count);
+				
+				cout << "You removed " << count << " " << prod << " in your cart\n";
+			}
+		}
+	}
+	catch (const exception& e) {
+		cerr << "Caught exception " << e.what() << endl;
+	}
+}
