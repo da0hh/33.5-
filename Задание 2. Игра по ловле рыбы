@@ -1,0 +1,81 @@
+#include <iostream>
+#include <cstdlib>
+
+using namespace std;
+
+class Fish {
+public:
+	int attempts;
+	Fish(int attempts) : attempts(attempts) {}
+};
+
+class Boot {};
+
+class Sector {
+	bool hasFish;
+	bool hasBoot;
+public:
+	Sector() : hasBoot(false), hasFish(false) {}
+
+	void setFish() { hasFish = true; }
+	void setBoot() { hasBoot = true; }
+
+	bool containsFish() { return hasFish; }
+	bool containBoot() { return hasBoot; }
+};
+
+int main(){
+	srand(time(0));
+	Sector field[9];
+	 
+	int fish = std::rand() % 9;
+	field[fish].setFish();
+
+	for (int i = 0; i < 3; i++) {
+		int boot = std::rand() % 9;
+		if (boot != fish && !field[boot].containBoot()) {
+			field[boot].setBoot();
+		}
+	}
+
+	int attempts = 0;
+	bool gameOver = false;
+
+    std::cout << "Добро пожаловать в игру «Ловля рыбы»!\n";
+    std::cout << "Угадайте, в каком из 9 секторов находится рыба.\n";
+    std::cout << "Если поймаете сапог — игра закончится.\n";
+
+    while (!gameOver) {
+        std::cout << "Введите номер сектора (1–9): ";
+        int choice;
+        std::cin >> choice;
+
+        if (choice < 1 || choice > 9) {
+            std::cout << "Неверный номер сектора. Введите число от 1 до 9.\n";
+            continue;
+        }
+
+        attempts++;
+        int sectorIndex = choice - 1;
+
+        try {
+            if (field[sectorIndex].containsFish()) {
+                throw Fish(attempts);
+            }
+            else if (field[sectorIndex].containBoot()) {
+                throw Boot();
+            }
+            else {
+                std::cout << "Пусто! Попробуйте ещё раз.\n";
+            }
+        }
+        catch (const Fish& e) {
+            std::cout << "Поздравляем! Вы поймали рыбу за " << e.attempts << " попыток!\n";
+            gameOver = true;
+        }
+        catch (const Boot&) {
+            std::cout << "Ой! Вы поймали сапог. Игра окончена.\n";
+            gameOver = true;
+        }
+    }
+}
