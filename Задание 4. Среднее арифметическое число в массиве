@@ -1,0 +1,63 @@
+#include "main.h"
+#include <utility>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <exception>
+
+template <typename T>
+void input(T array[8])
+{
+    std::cout << "Введите элементы массива (8 штук): ";
+    for (int i = 0; i < 8; ++i)
+    {
+        while (!(std::cin >> array[i])) {
+            std::cout << "Ошибка ввода! Введите числовое значение: ";
+            std::cin.clear();
+            while (std::cin.get() != '\n'); 
+        }
+    }
+}
+
+template <typename T>
+double calculateAverage(T array[8])
+{
+    double sum = 0;
+    for (int i = 0; i < 8; ++i)
+    {
+        sum += static_cast<double>(array[i]);
+    }
+    return sum / 8;
+}
+
+int main()
+{
+    setlocale(LC_ALL, "RU");
+
+    std::cout << "--- Программа расчета среднего арифметического ---\n";
+    std::cout << "Выберите тип данных:\n1. int\n2. double\n3. float\nВаш выбор: ";
+
+    int choice;
+    std::cin >> choice;
+
+    if (choice == 1) {
+        int arr[8];
+        input(arr);
+        std::cout << "Среднее арифметическое (int): " << calculateAverage(arr) << std::endl;
+    }
+    else if (choice == 2) {
+        double arr[8];
+        input(arr);
+        std::cout << "Среднее арифметическое (double): " << calculateAverage(arr) << std::endl;
+    }
+    else if (choice == 3) {
+        float arr[8];
+        input(arr);
+        std::cout << "Среднее арифметическое (float): " << calculateAverage(arr) << std::endl;
+    }
+    else {
+        std::cout << "Неверный выбор." << std::endl;
+    }
+
+    return 0;
+}
