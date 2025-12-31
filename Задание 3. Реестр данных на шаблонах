@@ -1,0 +1,67 @@
+#include <iostream>
+#include <utility>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <exception>
+
+using namespace std;
+
+template<typename T1, typename T2>
+class Pair
+{
+	T1 key;
+	T2 value;
+public:
+	Pair(T1 _key, T2 _value) : key(_key), value(_value) {}
+
+	T1 getKey() const { return key; }
+	T2 getValue() const { return value; }
+};
+
+template<typename T1, typename T2>
+
+class Registry
+{
+	vector<Pair<T1, T2>> list;
+public:
+	void add(T1 key, T2 value) { list.emplace_back(key, value); }
+	void remove(T1 key) {
+		auto it = find_if(list.begin(), list.end(), [&key](const Pair<T1, T2>& p) {
+			return p.getKey() == key;
+			});
+		if (it != list.end()) {
+			list.erase(it);
+			cout << "Key " << key << " was deleted with its value\n";
+		}
+		else
+			cout << "Invalid key\n";
+	}
+	void print() {
+		for (const auto& it : list) {
+			cout << it.getKey() << " - " << it.getValue() << endl;
+		}
+	}
+	void find(T1 key) {
+		for (const auto& it : list) {
+			if (it.getKey() == key)
+				cout << it.getValue() << endl;
+		}
+	}
+};
+
+int main(){
+	setlocale(LC_ALL, "RU");
+	string a = "add", b = "remove", c = "print", d = "find";
+	int key1 = 4; string val1 = "Привет";
+	int key2 = 10; string val2 = "Мир";
+
+	Registry<int, string> m;
+
+	m.add(key1, val1);
+	m.add(key2, val2);
+	m.print();
+	m.find(key1);
+	m.remove(key2);
+	m.find(key2);
+}
