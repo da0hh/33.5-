@@ -50,18 +50,67 @@ public:
 	}
 };
 
+template<typename TK, typename TV>
+void processRegistry() {
+	Registry<TK, TV> reg;
+	string command;
+	TK key;
+	TV value;
+
+	cout << "\nКоманды: add, remove, print, find, exit\n";
+	while (true) {
+		cout << "\nВведите команду: ";
+		cin >> command;
+
+		if (command == "add") {
+			cout << "Введите ключ и значение: ";
+			cin >> key >> value;
+			reg.add(key, value);
+		}
+		else if (command == "remove") {
+			cout << "Введите ключ для удаления: ";
+			cin >> key;
+			reg.remove(key);
+		}
+		else if (command == "print") {
+			reg.print();
+		}
+		else if (command == "find") {
+			cout << "Введите ключ для поиска: ";
+			cin >> key;
+			reg.find(key);
+		}
+		else if (command == "exit") {
+			break;
+		}
+		else {
+			cout << "Неизвестная команда!\n";
+		}
+	}
+}
+
 int main(){
 	setlocale(LC_ALL, "RU");
 	string a = "add", b = "remove", c = "print", d = "find";
-	int key1 = 4; string val1 = "Привет";
-	int key2 = 10; string val2 = "Мир";
 
-	Registry<int, string> m;
+	int key1; string val1;
+	int key2; string val2;
 
-	m.add(key1, val1);
-	m.add(key2, val2);
-	m.print();
-	m.find(key1);
-	m.remove(key2);
-	m.find(key2);
+	cout << "Choose type data (Key / Value):\n";
+	cout << "1. int / int\n";
+	cout << "2. double / string\n";
+	cout << "3. string / string\n";
+	cout << "4. string / int\n";
+	cout << "Your choice: ";
+
+	int choice;
+	cin >> choice;
+
+	switch (choice) {
+	case 1: processRegistry<int, int>(); break;
+	case 2: processRegistry<double, string>(); break;
+	case 3: processRegistry<string, string>(); break;
+	case 4: processRegistry<string, int>(); break;
+	default: cout << "Неверный выбор. Выход.\n"; break;
+	}
 }
